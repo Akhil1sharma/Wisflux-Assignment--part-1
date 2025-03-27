@@ -2,37 +2,31 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Implement registration logic here using fetch to your backend /api/register
     try {
-        const response = await fetch('/api/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name, email, password }),
-        });
+      const response = await fetch('http://localhost:3001/api/auth/register', { // Use full API URL
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (response.ok) {
-           // Redirect to login page after successful registration
-           window.location.href = '/login';
-        } else {
-          console.error('Registration failed:', data.message);
-          // Handle registration failure (show error message)
-        }
-      } catch (error) {
-        console.error('Registration error:', error);
-        // Handle network errors
+      if (response.ok) {
+        window.location.href = '/login'; // Redirect to login
+      } else {
+        console.error('Registration failed:', data.message);
       }
-
+    } catch (error) {
+      console.error('Registration error:', error);
+    }
   };
 
   return (
@@ -41,15 +35,9 @@ const Register = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <input
           type="password"
